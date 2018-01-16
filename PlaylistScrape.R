@@ -8,7 +8,7 @@ robotstxt::paths_allowed("https://www.relisten.be/playlists/")
 
 
 #Example page
-html_page <- read_html("https://www.relisten.be/playlists/radio1/01-01-2018.html")
+#html_page <- read_html("https://www.relisten.be/playlists/radio1/01-01-2018.html")
 
 
 #function to read a playlist, returnin a dataframe with timestamp, artist and title of song
@@ -36,6 +36,9 @@ read_playlist <- function(radio, date){
     html_nodes(css = ".media-body > p > a > span") %>%
     html_text()
   
+  #check for empty pages
+  if (length(artist) == 0) {return(NULL)}
+  
   playlist <- data.frame(radio, date, time, title, artist, stringsAsFactors = FALSE)
   playlist$date <- lubridate::dmy(playlist$date)
   playlist
@@ -43,8 +46,8 @@ read_playlist <- function(radio, date){
 
 #adding system sleep to function
 read_playlist_and_sleep <- function(radio, date) {
-  read_playlist(radio, date)
   Sys.sleep(10)
+  read_playlist(radio, date)
 }
 
 
@@ -54,29 +57,10 @@ read_playlist_and_sleep <- function(radio, date) {
 #df_test <- read_playlist("radio1", "5-01-2018")
 
 
-#SCRAPING
-#making the selection
-day <- 8:16
-dates_selection <- paste0(day,"-01-2018")
-
-#radios selection
-radio_selection<- c("radio1", "radio2", "studiobrussel", "mnm", 
-                     "joefm", "qmusic", "nostalgie")
-
-#making all pair combinations
-all_pairs <- merge(dates_selection, radio_selection)
-colnames(all_pairs) <- c("date", "radio")
-
-
-
-#SCRAPE TEST
-
-#test dataframe of three
-three_pairs <- sample_n(all_pairs, 3)
-
-#Currently returns as a list
-test <- map2(three_pairs$radio, three_pairs$date, read_playlist_and_sleep)
-
-
-
-
+#test on empty pages
+# read_playlist("clubfm", "7-1-2018")
+# 
+# radios <- c("radio1", "clubfm")
+# date <- "07-01-2018"
+# pairs <- merge(radios, date)
+# map2_df(pairs$x, pairs$y, read_playlist)
