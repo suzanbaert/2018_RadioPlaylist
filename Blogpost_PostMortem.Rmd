@@ -1,0 +1,65 @@
+---
+title: "The Post Mortom Airtime effect"
+output: html_document
+---
+
+I was busy on a little side project on Radio Playlists when the news broke about the death of Dolores O’Riordan, front singer of The Cranberries. And sure enough, a few hours later I could see The Cranberries starting to pop up in the playlists.  
+Their second album *No Need to Argue* was one of my favourite CD's as a teenager, and guided me through some rough times. So I wondered: how many times would they be played? And it would it all be 'Zombie', or would some of their other gems get air time as well?
+
+## Scraping the playlist
+There is a website that contains playlists for quite a few Belgian radio stations (unfortunately only the Flemish ones). By using this site rather then the radio's own sites, I could scrape different broadcasting companies with one script. I did do some random checks to make sure that the playlists were matching though.  
+  
+First loading the packages needed and checking whether I am allowed to scrape this site via the `robotstxt` package.
+
+```{r message=FALSE, warning=FALSE}
+library(rvest)
+library(xml2)
+library(tidyverse)
+
+robotstxt::paths_allowed("https://www.relisten.be/playlists/")
+```
+
+
+I wrote a `read_playlist` funcion to scrape the data into a dataframe with 5 columns: station, date, timestamp, artist and title. I immediately made a second version for those times I would need to iterate this function, called `read_playlist_and_sleep` which just adds 5 seconds in between every iteration.
+```{r}
+
+#function to read a playlist, returnin a dataframe with timestamp, artist and title of song
+read_playlist <- function(radio, date){
+
+  #assemble link
+  link <- paste0("https://www.relisten.be/playlists/", radio, "/", date, ".html")
+
+  #playlist info
+  html_playlist <- read_html(link) %>%
+    html_nodes(css = "#playlist")
+
+  #get time info
+  time <- html_playlist %>%
+    html_nodes(css = ".media-body > h4 > .pull-right") %>%
+    html_text()
+  
+  #get title info
+  title <- html_playlist %>%
+    html_nodes(css = ".media-body > h4 > span") %>%
+    html_text()
+  
+  #get artist info
+  artist <- html_playlist %>%
+    html_nodes(css = ".media-body > p > a > span") %>%
+    html_text()
+  
+    #check for empty pages and return NA if that's the case - otherwise purrr::map will fail later on
+  if (length(artist) == 0) {return(NULL)}
+
+  #assembling the dataframe
+  playlist <- data.frame(radio, date, time, title, artist, stringsAsFactors = FALSE)
+  playlist$date <- lubridate::dmy(playlist$date)
+  playlist
+}
+
+
+#adding system sleep to function
+read_playlist_and_sleep <- function(radio, date) {
+  Sys.sleep(5)
+  read_playlist(radio, date)
+}
