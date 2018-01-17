@@ -87,86 +87,70 @@ playlist_DavidBowie <- read_all_playlist_on_dates("11-01-2016", "David Bowie")
 
 
 
-#reading in dat
+#reading in data
 
 
 #news in paper on 15/01/2018 om 18:22 
-playlist_TheCranberries <- readRDS(playlist_TheCranberries.RDS)
+playlist_TheCranberries <- readRDS("data/playlist_TheCranberries.RDS")
 
 #news in paper on 07/01/2018 om 14:54 
-playlist_FranceGall <- readRDS(playlist_FranceGall.RDS)
+playlist_FranceGall <- readRDS("data/playlist_FranceGall.RDS")
 
 #news in paper on 25/10/2017 om 17:36
-playlist_FatsDomino <- readRDS(playlist_FatsDomino.RDS)
+playlist_FatsDomino <- readRDS("data/playlist_FatsDomino.RDS")
 
 #news in paper on 06/12/2017 om 07:28 
-playlist_JohnnyHallyday <- readRDS(playlist_JohnnyHallyday.RDS)
+playlist_JohnnyHallyday <- readRDS("data/playlist_JohnnyHallyday.RDS")
 
 #news in paper on 20/07/2017 om 21:09
-playlist_LinkinPark <- readRDS(playlist_LinkinPark.RDS)
+playlist_LinkinPark <- readRDS("data/playlist_LinkinPark.RDS")
 
 #news in paper on 03/10/2017 om 06:23
-playlist_TomPetty <- readRDS(playlist_TomPetty.RDS)
+playlist_TomPetty <- readRDS("data/playlist_TomPetty.RDS")
 
 #news in paper on 11/11/2016 om 09:31
-playlist_LeonardCohen <- readRDS(playlist_LeonardCohen.RDS)
+playlist_LeonardCohen <- readRDS("data/playlist_LeonardCohen.RDS")
 
 #news in paper on 21/04/2016 om 19:19
-playlist_Prince <- readRDS(playlist_Prince.RDS)
+playlist_Prince <- readRDS("data/playlist_Prince.RDS")
 
 #news in paper on 17/03/2016 om 04:24
-playlist_FrankSinatra <- readRDS(playlist_FrankSinatra.RDS)
+playlist_FrankSinatra <- readRDS("data/playlist_FrankSinatra.RDS")
 
 #news in paper on 11/01/2016 om 16:13
-playlist_DavidBowie <- readRDS(playlist_DavidBowie.RDS)
+playlist_DavidBowie <- readRDS("data/playlist_DavidBowie.RDS")
+
+
+
 
 
 
 #ANALYSIS
 
-
-
-str_view(playlist_DavidBowie$artist, "[dD]avid Bowie", match=TRUE)
-match <- str_detect(playlist_DavidBowie$artist, "Bowie")
-match <- str_detect(playlist_DavidBowie$artist, regex("David Bowie", ignore_case = TRUE))
-
-playlist_matchBowie <- playlist_DavidBowie[match,]
-
-
-
-
-
-playlist_match <- function(playlist, artist) {
-  
-  #finding rows with artists name, and extracting only those in a subset
-  match <- str_detect(playlist, regex(artist, ignore_case = TRUE))
-  playlist[match,]
+find_match <- function(playlist, pattern) {
+  match <- grepl(pattern, playlist$artist, ignore.case = TRUE)
+  match_df <- playlist[match,]
 }
 
 
 
-playlist_match(playlist_DavidBowie, "David Bowie")
+#building input 
+input_playlist <- list(playlist_DavidBowie, playlist_FatsDomino, playlist_FranceGall,
+              playlist_FrankSinatra, playlist_JohnnyHallyday, playlist_LeonardCohen,
+              playlist_LinkinPark, playlist_Prince, playlist_TheCranberries,
+              playlist_TomPetty)
+              
+input_pattern <- c("Bowie", "Fats", "France Gall", "Frank Sinatra","Hall[iy]day", "Cohen",
+             "Linkin", "Prince [^M]", "Cranberries", "Petty")
+
+#by looking manual in case i had something i didn't want:
+str_view(playlist_TomPetty$artist, "Petty", match=TRUE)
+
+
+#combining all matching rows in one dataframe
+match_df <- map2_df(input_playlist, input_pattern, find_match)
 
 
 
 
-findplaylist
-
-findnumbersongs 
-
-
-
-#REMEMBER
-#Need to throw out any stations that don't have 4 days complete
-
-
-glimpse(playlist_TheCranberries)
-
-playlist_TheCranberries %>%
-  group_by(radio,date) %>%
-  summarise(n()) %>%
-  group_by(radio) %>%
-  summarise(n())
-
-#or thecranberrries need to remove clubfm
 
