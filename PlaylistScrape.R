@@ -4,7 +4,6 @@ library(xml2)
 library(tidyverse)
 
 
-robotstxt::paths_allowed("https://www.relisten.be/playlists/")
 
 
 #Example page
@@ -36,8 +35,15 @@ read_playlist <- function(radio, date){
     html_nodes(css = ".media-body > p > a > span") %>%
     html_text()
   
-  #check for empty pages
+  #check for empty pages and return NA if that's the case
+  # if (length(artist) == 0) {
+  #   artist <- NA
+  #   time <- NA
+  #   title <- NA}
+  
+  #check for empty pages and return NA if that's the case
   if (length(artist) == 0) {return(NULL)}
+
   
   playlist <- data.frame(radio, date, time, title, artist, stringsAsFactors = FALSE)
   playlist$date <- lubridate::dmy(playlist$date)
@@ -46,7 +52,7 @@ read_playlist <- function(radio, date){
 
 #adding system sleep to function
 read_playlist_and_sleep <- function(radio, date) {
-  Sys.sleep(10)
+  Sys.sleep(5)
   read_playlist(radio, date)
 }
 
@@ -57,10 +63,12 @@ read_playlist_and_sleep <- function(radio, date) {
 #df_test <- read_playlist("radio1", "5-01-2018")
 
 
-#test on empty pages
+# #test on empty pages
 # read_playlist("clubfm", "7-1-2018")
 # 
 # radios <- c("radio1", "clubfm")
 # date <- "07-01-2018"
 # pairs <- merge(radios, date)
-# map2_df(pairs$x, pairs$y, read_playlist)
+# test <- map2_df(pairs$x, pairs$y, read_playlist)
+# 
+# tail(test)
