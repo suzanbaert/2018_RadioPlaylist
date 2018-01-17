@@ -56,34 +56,31 @@ read_all_playlists_on_dates <- function(newsdate, artist) {
 #SCRAPING POST MORTEM (or after the news broke)
 
 #news in paper on 15/01/2018 om 18:22 
-playlist_TheCranberries <- read_all_playlist_on_dates("15-01-2018", "The Cranberries")
+playlist_TheCranberries <- read_all_playlists_on_dates("15-01-2018", "The Cranberries")
 
 #news in paper on 07/01/2018 om 14:54 
-playlist_FranceGall <- read_all_playlist_on_dates("7-01-2018", "France Gall")
+playlist_FranceGall <- read_all_playlists_on_dates("7-01-2018", "France Gall")
 
 #news in paper on 25/10/2017 om 17:36
-playlist_FatsDomino <- read_all_playlist_on_dates("25-10-2017", "Fats Domino")
+playlist_FatsDomino <- read_all_playlists_on_dates("25-10-2017", "Fats Domino")
 
 #news in paper on 06/12/2017 om 07:28 
-playlist_JohnnyHallyday <- read_all_playlist_on_dates("06-12-2017", "Johnny Hallyday")
+playlist_JohnnyHallyday <- read_all_playlists_on_dates("06-12-2017", "Johnny Hallyday")
 
 #news in paper on 20/07/2017 om 21:09
-playlist_LinkinPark <- read_all_playlist_on_dates("20-07-2017", "Linkin Park")
+playlist_LinkinPark <- read_all_playlists_on_dates("20-07-2017", "Linkin Park")
 
 #news in paper on 03/10/2017 om 06:23
-playlist_TomPetty <- read_all_playlist_on_dates("03-10-2017", "Tom Petty")
+playlist_TomPetty <- read_all_playlists_on_dates("03-10-2017", "Tom Petty")
 
 #news in paper on 11/11/2016 om 09:31
-playlist_LeonardCohen <- read_all_playlist_on_dates("11-11-2016", "Leonard Cohen")
+playlist_LeonardCohen <- read_all_playlists_on_dates("11-11-2016", "Leonard Cohen")
 
 #news in paper on 21/04/2016 om 19:19
-playlist_Prince <- read_all_playlist_on_dates("21-04-2016", "Prince")
-
-#news in paper on 17/03/2016 om 04:24
-playlist_FrankSinatra <- read_all_playlist_on_dates("17-03-2016", "Frank Sinatra")
+playlist_Prince <- read_all_playlists_on_dates("21-04-2016", "Prince")
 
 #news in paper on 11/01/2016 om 16:13
-playlist_DavidBowie <- read_all_playlist_on_dates("11-01-2016", "David Bowie")
+playlist_DavidBowie <- read_all_playlists_on_dates("11-01-2016", "David Bowie")
 
 
 
@@ -114,9 +111,6 @@ playlist_LeonardCohen <- readRDS("data/playlist_LeonardCohen.RDS")
 #news in paper on 21/04/2016 om 19:19
 playlist_Prince <- readRDS("data/playlist_Prince.RDS")
 
-#news in paper on 17/03/2016 om 04:24
-playlist_FrankSinatra <- readRDS("data/playlist_FrankSinatra.RDS")
-
 #news in paper on 11/01/2016 om 16:13
 playlist_DavidBowie <- readRDS("data/playlist_DavidBowie.RDS")
 
@@ -125,7 +119,7 @@ playlist_DavidBowie <- readRDS("data/playlist_DavidBowie.RDS")
 
 
 
-#ANALYSIS
+#TO ONE DATAFRAME
 
 find_match <- function(playlist, pattern) {
   match <- grepl(pattern, playlist$artist, ignore.case = TRUE)
@@ -136,11 +130,11 @@ find_match <- function(playlist, pattern) {
 
 #building input 
 input_playlist <- list(playlist_DavidBowie, playlist_FatsDomino, playlist_FranceGall,
-              playlist_FrankSinatra, playlist_JohnnyHallyday, playlist_LeonardCohen,
+              playlist_JohnnyHallyday, playlist_LeonardCohen,
               playlist_LinkinPark, playlist_Prince, playlist_TheCranberries,
               playlist_TomPetty)
               
-input_pattern <- c("Bowie", "Fats", "France Gall", "Frank Sinatra","Hall[iy]day", "Cohen",
+input_pattern <- c("Bowie", "Fats", "France Gall", "Hall[iy]day", "Cohen",
              "Linkin", "Prince [^M]", "Cranberries", "Petty")
 
 #by looking manual in case i had something i didn't want:
@@ -150,7 +144,42 @@ str_view(playlist_TomPetty$artist, "Petty", match=TRUE)
 #combining all matching rows in one dataframe
 match_df <- map2_df(input_playlist, input_pattern, find_match)
 
+#saving to avoid future computing time
+saveRDS(match_df, "data/match_df.RDS")
 
 
 
 
+
+#ANALYSIS
+
+summary_table <- match_df %>%
+  group_by(death, timing) %>%
+  summarise(n=n()) 
+
+#ensuring descending plot
+levels <- summary_table %>%
+  filter(timing=="post")%>%
+  arrange(desc(n)) %>%
+  pull(death)
+
+summary_table$death <- ordered(summary_table$death, levels=levels)
+
+
+
+summary_table_spread <- match_df %>%
+  group_by(death, timing) %>%
+  summarise(n=n()) %>%
+  spread(timing, n)
+
+summary_table_gather <- summary_table_spread %>%
+  gather(timing, total, -death)
+
+summary_table_gather[is.na(summary_table_gather)] <- 0
+summary_table_gather$death <- ordered(summary_table_spread$death, levels=levels)
+
+
+
+#plotting pre and post
+ggplot(summary_table_gather) +
+  geom_col(aes(x=death, y=total, fill=timing), position="dodge")
