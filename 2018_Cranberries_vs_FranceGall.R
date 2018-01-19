@@ -22,8 +22,7 @@ radio_selection <- c("radio1", "radio2", "studiobrussel", "mnm",
 
 #SCRAPING FOR THE CRANBERRIES
 #making the selection
-day <- 15:16
-dates_selection <- paste0(day,"-01-2018")
+dates_selection <- c("15-01-2018", "16-01-2018")
 
 
 #making all pair combinations

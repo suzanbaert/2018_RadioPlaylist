@@ -147,11 +147,17 @@ match_df <- map2_df(input_playlist, input_pattern, find_match)
 #saving to avoid future computing time
 saveRDS(match_df, "data/match_df.RDS")
 
+match_df <- readRDS("data/match_df.RDS")
+
 
 
 
 
 #ANALYSIS
+
+#contingency table
+cont_table <- as.data.frame(table(match_df$death, match_df$timing))
+
 
 summary_table <- match_df %>%
   group_by(death, timing) %>%
@@ -163,23 +169,95 @@ levels <- summary_table %>%
   arrange(desc(n)) %>%
   pull(death)
 
-summary_table$death <- ordered(summary_table$death, levels=levels)
 
-
-
-summary_table_spread <- match_df %>%
+#comparing pre and post
+summary_table <- match_df %>%
   group_by(death, timing) %>%
   summarise(n=n()) %>%
-  spread(timing, n)
+  spread(timing, n) %>%
+  arrange(desc(post))
 
-summary_table_gather <- summary_table_spread %>%
-  gather(timing, total, -death)
+levels <- summary_table %>%
+  arrange(post) %>%
+  pull(death)
 
-summary_table_gather[is.na(summary_table_gather)] <- 0
-summary_table_gather$death <- ordered(summary_table_spread$death, levels=levels)
+# match_df$death <- ordered(match_df$death, levels=levels)
 
 
 
 #plotting pre and post
-ggplot(summary_table_gather) +
-  geom_col(aes(x=death, y=total, fill=timing), position="dodge")
+colors <- c("#7a337c", "#CFCCCF")
+levels_artists <- summary_table %>%
+  arrange(post) %>%
+  pull(death)
+
+
+ggplot(match_df, aes(x=death, fill=timing)) +
+  geom_bar(position = position_dodge(preserve = "single"))+
+  scale_fill_manual(values=colors) +
+  labs(title ="Times played pre- versus post mortem", 
+        x = "Artist", y = "Frequency over 2 days") +
+  scale_x_discrete(limits = levels_artists) +
+  coord_flip()
+
+
+
+
+#which radio?
+radio_summary <- match_df %>%
+  group_by(radio, timing) %>%
+  summarise(n=n()) %>%
+  spread(timing, n) %>%
+  arrange(desc(post))
+
+
+
+
+
+
+#oldies
+match_df %>%
+  filter(death %in% c("Fats Domino")) %>%
+  group_by(radio, timing) %>%
+  summarise(n=n()) %>%
+  spread(timing, n) %>%
+  arrange(desc(post))
+
+match_df %>%
+  filter(death %in% c("France Gall", "Fats Domino", "Johnny Hallyday")) %>%
+  group_by(radio, timing) %>%
+  summarise(n=n()) %>%
+  spread(timing, n) %>%
+  arrange(desc(post))
+
+
+#master singer-songwriters
+match_df %>%
+  filter(death %in% c("Leonard Cohen", "Tom Petty")) %>%
+  group_by(radio, timing) %>%
+  summarise(n=n()) %>%
+  spread(timing, n) %>%
+  arrange(desc(post))
+
+
+#transcending 
+match_df %>%
+  filter(death %in% c("David Bowie", "Prince")) %>%
+  group_by(radio, timing) %>%
+  summarise(n=n()) %>%
+  spread(timing, n) %>%
+  arrange(desc(post))
+
+
+levels_radios <- radio_summary %>%
+  arrange(post) %>%
+  pull(radio)
+
+
+ggplot(match_df, aes(x=radio, fill=timing)) +
+  geom_bar(position = position_dodge(preserve = "single"))+
+  scale_fill_manual(values=colors) +
+  labs(title ="Times played pre- versus post mortem", 
+       x = "Radio", y = "Frequency over 2 days") +
+  scale_x_discrete(limits = levels_radios) +
+  coord_flip()
