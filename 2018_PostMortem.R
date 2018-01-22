@@ -175,6 +175,7 @@ summary_table <- match_df %>%
   group_by(death, timing) %>%
   summarise(n=n()) %>%
   spread(timing, n) %>%
+  mutate(ratio = post/pre) %>%
   arrange(desc(post))
 
 levels <- summary_table %>%
