@@ -34,11 +34,11 @@ caution
 playlist_TheCranberries <- map2_df(all_pairs$radio, all_pairs$date, read_playlist_and_sleep)
 
 #save to avoid rescraping
-saveRDS(playlist_TheCranberries, "data/playlist_TheCranberries.RDS")
+saveRDS(playlist_TheCranberries, "postmortem_project/data/playlist_TheCranberries.RDS")
 
 
 #reading file
-playlist_TheCranberries <- readRDS("data/playlist_TheCranberries.RDS")
+playlist_TheCranberries <- readRDS("postmortem_project/data/playlist_TheCranberries.RDS")
 
 
 #check return
@@ -99,9 +99,9 @@ playlist_FranceGall <- map2_df(all_pairs$radio, all_pairs$date, read_playlist_an
 #test_list <- map2(all_pairs$radio, all_pairs$date, read_playlist_and_sleep)
 
 
-saveRDS(playlist_FranceGall, "data/playlist_FranceGall.RDS")
+saveRDS(playlist_FranceGall, "postmortem_project/data/playlist_FranceGall.RDS")
 
-playlist_FranceGall <- readRDS("data/playlist_FranceGall.RDS")
+playlist_FranceGall <- readRDS("postmortem_project/data/playlist_FranceGall.RDS")
 
 
 #exploring france gall
@@ -148,9 +148,9 @@ playlist_LinkinPark <- map2_df(all_pairs$radio, all_pairs$date, read_playlist_an
 #test_list <- map2(all_pairs$radio, all_pairs$date, read_playlist_and_sleep)
 
 
-saveRDS(playlist_LinkinPark, "data/playlist_LinkinPark.RDS")
+saveRDS(playlist_LinkinPark, "postmortem_project/data/playlist_LinkinPark.RDS")
 
-playlist_LinkinPark <- readRDS("data/playlist_LinkinPark.RDS")
+playlist_LinkinPark <- readRDS("postmortem_project/data/playlist_LinkinPark.RDS")
 
 
 #exploring france gall
@@ -200,9 +200,9 @@ playlist_LeonardCohen <- map2_df(all_pairs$radio, all_pairs$date, read_playlist_
 #test_list <- map2(all_pairs$radio, all_pairs$date, read_playlist_and_sleep)
 
 
-saveRDS(playlist_LeonardCohen, "data/playlist_LeonardCohen.RDS")
+saveRDS(playlist_LeonardCohen, "postmortem_project/data/playlist_LeonardCohen.RDS")
 
-playlist_LeonardCohen <- readRDS("data/playlist_LeonardCohen.RDS")
+playlist_LeonardCohen <- readRDS("postmortem_project/data/playlist_LeonardCohen.RDS")
 
 
 #exploring leonard cohen
@@ -252,9 +252,9 @@ playlist_DavidBowie <- map2_df(all_pairs$radio, all_pairs$date, read_playlist_an
 #test_list <- map2(all_pairs$radio, all_pairs$date, read_playlist_and_sleep)
 
 
-saveRDS(playlist_DavidBowie, "data/playlist_DavidBowie.RDS")
+saveRDS(playlist_DavidBowie, "postmortem_project/data/playlist_DavidBowie.RDS")
 
-playlist_DavidBowie <- readRDS("data/playlist_DavidBowie.RDS")
+playlist_DavidBowie <- readRDS("postmortem_project/data/playlist_DavidBowie.RDS")
 
 
 #exploring leonard cohen

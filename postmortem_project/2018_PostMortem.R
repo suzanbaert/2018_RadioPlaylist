@@ -45,7 +45,7 @@ read_all_playlists_on_dates <- function(newsdate, artist) {
   artist0 <- str_replace(artist, " ", "")
 
     #save to avoid rescraping
-  RDS <- paste0("data/playlist_", artist0, ".RDS")
+  RDS <- paste0("postmortem_project/data/playlist_", artist0, ".RDS")
   saveRDS(playlist_df, RDS)
   
   return(playlist_df)
@@ -88,31 +88,31 @@ playlist_DavidBowie <- read_all_playlists_on_dates("11-01-2016", "David Bowie")
 
 
 #news in paper on 15/01/2018 om 18:22 
-playlist_TheCranberries <- readRDS("data/playlist_TheCranberries.RDS")
+playlist_TheCranberries <- readRDS("postmortem_project/data/playlist_TheCranberries.RDS")
 
 #news in paper on 07/01/2018 om 14:54 
-playlist_FranceGall <- readRDS("data/playlist_FranceGall.RDS")
+playlist_FranceGall <- readRDS("postmortem_project/data/playlist_FranceGall.RDS")
 
 #news in paper on 25/10/2017 om 17:36
-playlist_FatsDomino <- readRDS("data/playlist_FatsDomino.RDS")
+playlist_FatsDomino <- readRDS("postmortem_project/data/playlist_FatsDomino.RDS")
 
 #news in paper on 06/12/2017 om 07:28 
-playlist_JohnnyHallyday <- readRDS("data/playlist_JohnnyHallyday.RDS")
+playlist_JohnnyHallyday <- readRDS("postmortem_project/data/playlist_JohnnyHallyday.RDS")
 
 #news in paper on 20/07/2017 om 21:09
-playlist_LinkinPark <- readRDS("data/playlist_LinkinPark.RDS")
+playlist_LinkinPark <- readRDS("postmortem_project/data/playlist_LinkinPark.RDS")
 
 #news in paper on 03/10/2017 om 06:23
-playlist_TomPetty <- readRDS("data/playlist_TomPetty.RDS")
+playlist_TomPetty <- readRDS("postmortem_project/data/playlist_TomPetty.RDS")
 
 #news in paper on 11/11/2016 om 09:31
-playlist_LeonardCohen <- readRDS("data/playlist_LeonardCohen.RDS")
+playlist_LeonardCohen <- readRDS("postmortem_project/data/playlist_LeonardCohen.RDS")
 
 #news in paper on 21/04/2016 om 19:19
-playlist_Prince <- readRDS("data/playlist_Prince.RDS")
+playlist_Prince <- readRDS("postmortem_project/data/playlist_Prince.RDS")
 
 #news in paper on 11/01/2016 om 16:13
-playlist_DavidBowie <- readRDS("data/playlist_DavidBowie.RDS")
+playlist_DavidBowie <- readRDS("postmortem_project/data/playlist_DavidBowie.RDS")
 
 
 
@@ -145,9 +145,9 @@ str_view(playlist_TomPetty$artist, "Petty", match=TRUE)
 match_df <- map2_df(input_playlist, input_pattern, find_match)
 
 #saving to avoid future computing time
-saveRDS(match_df, "data/match_df.RDS")
+saveRDS(match_df, "postmortem_project/data/match_df.RDS")
 
-match_df <- readRDS("data/match_df.RDS")
+match_df <- readRDS("postmortem_project/data/match_df.RDS")
 
 
 
