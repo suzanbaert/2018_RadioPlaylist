@@ -23,10 +23,10 @@ radio_selection <- c("radio1", "radio2", "studiobrussel", "mnm",
 
 #date selection. i want to hit radios between xmas and "crocus holiday"
 #so dates from monday 8/1/2018 to 11/2/2018
-date_jan_n <- 8:31
-dates_jan <- paste0(date_jan_n,"-01-2018")
-date_feb_n <- 1:11
-dates_feb <- paste0(date_feb_n,"-02-2018")
+dates_jan_n <- 8:31
+dates_jan <- paste0(dates_jan_n,"-01-2018")
+dates_feb_n <- 1:11
+dates_feb <- paste0(dates_feb_n,"-02-2018")
 date_selection <- c(dates_jan, dates_feb)
 
 
@@ -45,7 +45,7 @@ input_df <- merge(date_selection, radio_selection)
 names(input_df) <- c("date", "radio")
 
 all_radios <- map2_df(input_df$radio, input_df$date, read_playlist_and_sleep)
-saveRDS(all_radios, "playlist_project/data/4weeks_allradios.RDS")
+saveRDS(all_radios, "4weeks_playlist_project/data/4weeks_allradios.RDS")
 
 
 
