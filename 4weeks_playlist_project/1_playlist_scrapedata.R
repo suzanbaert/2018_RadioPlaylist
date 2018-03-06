@@ -4,6 +4,11 @@ library(tidyverse)
 #for iterative: read_playlist_and_sleep <- function(radio, date)
 source("PlaylistScrape.R")
 
+
+#------------------
+# SCRAPING THE DATA
+#------------------
+
 #function tests - still works?
 #○https://www.relisten.be/playlists/studiobrussel/09-01-2018.html
 test1 <- read_playlist("studiobrussel", "09-01-2018")
@@ -56,5 +61,41 @@ count(stubru, artist, sort = TRUE)
 count(stubru, artist, title, sort = TRUE)
 
 
+#------------------
+# CHECKING THE DATA
+#------------------
 
 
+all_radios <- readRDS("4weeks_playlist_project/data/4weeks_allradios.RDS")
+
+
+#do i have all the dates for all radios
+table(all_radios$radio, all_radios$date)
+
+#hitfm has no hits --> remove
+#clubfm has 10 missing days --> remove
+#radiofg has 7 missing days, and at least two incomplete ones --> remove
+
+radio_keep <- c("radio1", "radio2", "studiobrussel", "mnm", 
+                "joefm", "qmusic", "nostalgie", "antwerpen",
+                "familyradio", "topradio", "vbro")
+
+radios_filt <- all_radios %>% 
+  filter(radio %in% radio_keep) %>% 
+  droplevels()
+
+  
+radios_clean <- radios_filt %>% 
+  unite(day, date, time, sep=" ") %>% 
+  mutate(day = lubridate::ymd_hm(day))
+  
+saveRDS(radios_clean, "4weeks_playlist_project/data/4weeks_radios_clean.RDS")
+
+
+
+
+#more cleaning needed
+View(radios_clean %>% count(artist))
+
+#all to lower case
+#some playlist use Ft. some use &
