@@ -4,8 +4,6 @@ library(xml2)
 library(tidyverse)
 
 
-
-
 #Example page
 #html_page <- read_html("https://www.relisten.be/playlists/radio1/01-01-2018.html")
 
@@ -52,7 +50,7 @@ read_playlist <- function(radio, date){
 
 #adding system sleep to function
 read_playlist_and_sleep <- function(radio, date) {
-  Sys.sleep(5)
+  Sys.sleep(sample(1:5, 1))
   read_playlist(radio, date)
 }
 
