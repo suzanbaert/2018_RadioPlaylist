@@ -85,17 +85,40 @@ radios_filt <- all_radios %>%
   droplevels()
 
   
-radios_clean <- radios_filt %>% 
+radios_clean1 <- radios_filt %>% 
+  mutate_all(tolower) %>% 
+  mutate_all(str_trim) %>% 
+  mutate_all(~str_replace(., "\\s{2,}", " ")) %>% 
   unite(day, date, time, sep=" ") %>% 
-  mutate(day = lubridate::ymd_hm(day))
-  
+  mutate(day = lubridate::ymd_hm(day)) 
+
+
+
+#still need to figure out what to do here
+#contains ton of dupes now between ft. & etc
+#on the other hand could be interesting to see who calls it featuring?
+
+#proposal: artist_clean replacing some of these
+#and main_artist which removes all the ft. junk
+
+radios_clean2 <- radios_clean1 %>% 
+  mutate(artist = str_replace(artist, "fe?a?t\\.", "and"),
+         artist = str_replace(artist, "[+&-]", "and"),
+         artist = str_replace(artist, " x ", "and"))
+
+
+
+artists_list <- radios_clean1 %>% 
+  count(artist) %>% 
+  pull(artist)
+
+str_view(artists_list, "fe?a?t\\.", match=TRUE)
+
+
+
+
+
+
 saveRDS(radios_clean, "4weeks_playlist_project/data/4weeks_radios_clean.RDS")
 
 
-
-
-#more cleaning needed
-View(radios_clean %>% count(artist))
-
-#all to lower case
-#some playlist use Ft. some use &
