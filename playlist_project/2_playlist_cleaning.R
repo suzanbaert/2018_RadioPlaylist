@@ -1,5 +1,5 @@
 library(tidyverse)
-#all_radios <- readRDS("4weeks_playlist_project/data/10weeks_allradios.RDS")
+#all_radios <- readRDS("playlist_project/data/10weeks_allradios.RDS")
 
 #------------------
 # CHECKING THE DATA
@@ -49,4 +49,4 @@ radios_clean2 <- radios_clean1 %>%
 
 
 
-saveRDS(radios_clean2, "4weeks_playlist_project/data/10weeks_radios_clean.RDS")
+saveRDS(radios_clean2, "playlist_project/data/10weeks_radios_clean.RDS")

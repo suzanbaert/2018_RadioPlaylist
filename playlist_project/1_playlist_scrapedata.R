@@ -46,7 +46,7 @@ input_df <- merge(date_selection, radio_selection)
 names(input_df) <- c("date", "radio")
 
 all_radios <- map2_df(input_df$radio, input_df$date, read_playlist_and_sleep)
-saveRDS(all_radios, "4weeks_playlist_project/data/10weeks_allradios.RDS")
+saveRDS(all_radios, "playlist_project/data/10weeks_allradios.RDS")
 
 
 

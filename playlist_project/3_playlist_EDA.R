@@ -2,13 +2,13 @@ library(tidyverse)
 
 
 #getting the data 
-all_radios <- readRDS("4weeks_playlist_project/data/4weeks_allradios.RDS")
-radios_clean <- readRDS("4weeks_playlist_project/data/4weeks_radios_clean.RDS")
+all_radios <- readRDS("playlist_project/data/4weeks_allradios.RDS")
+radios_clean <- readRDS("playlist_project/data/4weeks_radios_clean.RDS")
 
 
 count(radios_clean, radio)
 
-#top artits
+#top artists
 radios_clean %>% 
   count(artist, sort = TRUE) %>% 
   top_n(20) %>% 
