@@ -6,7 +6,9 @@ library(tidyverse)
 #------------------
 
 #basic cleaning
-radios_clean1 <- all_radios %>% 
+radios_clean1 <- all_radios %>%
+  mutate(artist = str_replace_all(artist, "\\(.+\\)", ""),
+         artist = str_replace_all(artist, "[.'*-]", " ")) %>% 
   mutate_all(tolower) %>% 
   mutate_all(str_trim) %>% 
   mutate_all(~str_replace(., "\\s{2,}", " ")) %>% 
@@ -16,9 +18,9 @@ radios_clean1 <- all_radios %>%
 
 #### Cleaning up artist list ####
 
-#artist list
+#artist list and look at all names with and for isntance
 artist_list <- count(radios_clean1, artist, sort=TRUE)
-unlist(str_extract_all(artist_list$artist, ".+ e[nt] .+"))
+unlist(str_extract_all(artist_list$artist, ".+ and .+"))
 
 artist_list2 <- count(radios_clean2, artist, sort=TRUE)
 unlist(str_extract_all(artist_list2$artist, ".+ and .+"))
@@ -34,18 +36,79 @@ keep_intact <- c("oscar and the wolf", "kc and the sunshine band", "kool and the
                  "womack and womack", "flash and the pan", "ike and tina turner", "mel and kim",
                  "touch and go", "sam and dave", "simon and garfunkel", "echo and the bunnymen", 
                  "the mamas and the papas", "peter bjorn and john", "angus and julia stone",
-                 "belle and sebastian", "samson and gert", "nicole and hugo")
+                 "belle and sebastian", "samson and gert", "nicole and hugo", "eric and sanne",
+                 "lamp lazarus and kris", "earth wind and fire", "c and c music factory",
+                 "sly and family stone", "iron and wine", "moments and whatnauts", "me and my")
+                 
 
+#regex: reducing ft. feat. vs. en/et & to and
+#regex: for cleaning, removing artist names if starting with the (lots of issues of beatles/the beatles etc)
 
 radios_clean2 <- radios_clean1 %>% 
-  mutate(artist = str_replace_all(artist, "fe?a?t\\.", "and"),
+  mutate(artist = str_replace_all(artist, "fe?a?t", "and"),
          artist = str_replace_all(artist, " [+&-x] ", " and "),
          artist = str_replace_all(artist, " vs ", " and "),
-         artist = str_replace_all(artist, " e[nt] ", " and ")) %>% 
+         artist = str_replace_all(artist, " e[nt] ", " and "))%>% 
   mutate(main_artist = case_when(
     artist %in% keep_intact ~ artist,
-    TRUE ~ str_replace(artist, "(.+) and .+", "\\1")))
+    TRUE ~ str_replace(artist, "(.+?) and .+", "\\1")))
 
+
+
+#checking songs with more than one artist
+
+collapse_titles_and_artists <- radios_clean2 %>% 
+  group_by(title, main_artist) %>% 
+  count(main_artist, sort=TRUE) %>% 
+  ungroup()
+
+test_via_titles_for_different_artist_writing <- collapse_titles_and_artists %>% 
+  group_by(title) %>% 
+  count(title, sort=TRUE) %>% 
+  filter(nn>1)
+
+collapse_titles_and_artists %>% 
+  filter(title %in% test_via_titles_for_different_artist_writing$title) %>% 
+  arrange(main_artist) %>% 
+  filter(n > 20) %>% 
+  View()
+ 
+
+
+
+filter(collapse_titles_and_artists, title == "hold on")
+
+
+#correcting artist names
+radios_clean1$artist <- str_replace(radios_clean1$artist, "^1?0cc", "10 cc")
+radios_clean1$artist <- str_replace(radios_clean1$artist, "blof", "bløf")
+str_replace(radios_clean1$artist, "lionel richie", "lionel ritchie")
+str_replace(radios_clean1$artist, "(beautiful south)", "the \\1")
+str_replace(radios_clean1$artist, "(mc fioti) future", "\\1")
+str_replace(radios_clean1$artist, "(todiefor) .+", "\\1")
+
+
+
+
+str_replace(radios_clean1$artist, "^havenzangers", "de havenzangers")
+str_replace(radios_clean1$artist, "de zangeres zonder naam", "zangeres zonder naam")
+
+
+
+
+str_replace(radios_clean1$artist, "the black box revelation", "black box revelation")
+
+str_replace(radios_clean1$artist, "the rock steady crew", "rock steady crew")
+str_replace(radios_clean1$artist, "^carpenters", "the carpenters")
+str_replace(radios_clean1$artist, "tom robinson$", "tom robinson band")
+str_replace(radios_clean1$artist, "2 pac", "2pac")
+
+
+
+str_replace(radios_clean1$artist, "luv'", "luv")
+
+
+filter(collapse_titles_and_artists, str_detect(collapse_titles_and_artists$main_artist, "52"))
 
 
 

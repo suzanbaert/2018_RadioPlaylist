@@ -21,8 +21,7 @@ robotstxt::paths_allowed("https://www.relisten.be/playlists/")
 #all radio stations on the Belgian version of the site
 #remoed hitfm, clubfm and radiofg because too many missing playlist days
 radio_selection <- c("radio1", "radio2", "studiobrussel", "mnm", 
-                     "joefm", "qmusic", "nostalgie", "antwerpen",
-                     "familyradio", "topradio", "vbro")
+                     "joefm", "qmusic", "nostalgie")
 
 
 #date selection. 
