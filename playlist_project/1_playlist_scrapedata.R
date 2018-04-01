@@ -27,7 +27,7 @@ radio_selection <- c("radio1", "radio2", "studiobrussel", "mnm",
 #date selection. 
 dates_jan <- paste0(1:31, "-01-2018")
 dates_feb <- paste0(1:28, "-02-2018")
-dates_mar <- paste0(1:15, "-03-2018")
+dates_mar <- paste0(1:31, "-03-2018")
 date_selection <- c(dates_jan, dates_feb, dates_mar)
 
 
