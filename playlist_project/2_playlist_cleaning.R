@@ -8,7 +8,7 @@ library(tidyverse)
 #basic cleaning
 radios_clean1 <- all_radios %>%
   mutate(artist = str_replace_all(artist, "\\(.+\\)", ""),
-         artist = str_replace_all(artist, "[.'*-]", " ")) %>% 
+         artist = str_replace_all(artist, "[.*-]", " ")) %>% 
   mutate_all(tolower) %>% 
   mutate_all(str_trim) %>% 
   mutate_all(~str_replace(., "\\s{2,}", " ")) %>% 
@@ -38,21 +38,27 @@ keep_intact <- c("oscar and the wolf", "kc and the sunshine band", "kool and the
                  "the mamas and the papas", "peter bjorn and john", "angus and julia stone",
                  "belle and sebastian", "samson and gert", "nicole and hugo", "eric and sanne",
                  "lamp lazarus and kris", "earth wind and fire", "c and c music factory",
-                 "sly and family stone", "iron and wine", "moments and whatnauts", "me and my")
+                 "sly and family stone", "iron and wine", "moments and whatnauts", "me and my",
+                 "martha and the muffins", "nelly and kelly rowland", "florence and the machine", 
+                 "years and years")
                  
 
 #regex: reducing ft. feat. vs. en/et & to and
-#regex: for cleaning, removing artist names if starting with the (lots of issues of beatles/the beatles etc)
+#regex: if "the artist" exists as well, make it "the artist" - fixed cranberries/the cranberries etc
 
 radios_clean2 <- radios_clean1 %>% 
-  mutate(artist = str_replace_all(artist, "fe?a?t", "and"),
-         artist = str_replace_all(artist, " [+&-x] ", " and "),
+  mutate(artist = str_replace_all(artist, " fe?a?t\\.? ", " and "),
+         artist = str_replace_all(artist, " [+&x] ", " and "),
          artist = str_replace_all(artist, " vs ", " and "),
-         artist = str_replace_all(artist, " e[nt] ", " and "))%>% 
-  mutate(main_artist = case_when(
-    artist %in% keep_intact ~ artist,
-    TRUE ~ str_replace(artist, "(.+?) and .+", "\\1")))
+         artist = str_replace_all(artist, " e[nt] ", " and ")) %>% 
+  mutate(artist = ifelse(paste("the", artist) %in% artist, paste("the", artist), artist)) %>% 
+  mutate(main_artist = case_when(artist %in% keep_intact ~ artist,
+                                 TRUE ~ str_replace(artist, "(.+?) and .+", "\\1")))
 
+
+
+
+#### check to thier ####
 
 
 #checking songs with more than one artist
