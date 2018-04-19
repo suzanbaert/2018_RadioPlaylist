@@ -28,13 +28,16 @@ unlist(str_extract_all(artist_list2$artist, ".+ and .+"))
 
 
 
+#changing all feat. ft. + & etc into "and"
+radios_clean1$artist_original <- radios_clean1$artist
+
+
 #fixing typos. I found these by looking at same title song but different artists
 source("playlist_project/2b_typos_cleaning.R")
 
 
 
-#changing all feat. ft. + & etc into "and"
-radios_clean1$artist_original <- radios_clean1$artist
+
 
 keep_intact <- c("oscar and the wolf", "kc and the sunshine band", "kool and the gang", 
                  "of monsters and men", "mumford and sons", "christine and the queens",
@@ -64,6 +67,8 @@ radios_clean2 <- radios_clean1 %>%
 
 
 
+saveRDS(radios_clean2, "playlist_project/data/3m_radios_clean.RDS")
+write.csv(radios_clean2, "playlist_project/data/3m_radios_clean.csv")
 
 
 
@@ -93,4 +98,4 @@ collapse_titles_and_artists %>%
 
 
 
-saveRDS(radios_clean2, "playlist_project/data/10weeks_radios_clean.RDS")
+

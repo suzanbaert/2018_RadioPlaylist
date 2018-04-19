@@ -38,10 +38,5 @@ radios_clean1$artist <- str_replace(radios_clean1$artist, "sin and sebastian", "
 
 radios_clean1$artist <- str_replace(radios_clean1$artist, "tom robinson band", "tom robinson")
 
-radios_clean1$artist <- str_replace(radios_clean1$artist, "", "")
 radios_clean1$artist <- str_replace(radios_clean1$artist, "popgun", "pop gun")
-radios_clean1$artist <- str_replace(radios_clean1$artist, "", "")
-radios_clean1$artist <- str_replace(radios_clean1$artist, "", "")
 
-radios_clean1$artist <- str_replace(radios_clean1$artist, "", "")
-radios_clean1$artist <- str_replace(radios_clean1$artist, "", "")
