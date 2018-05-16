@@ -49,7 +49,18 @@ saveRDS(all_radios, "playlist_project/data/10weeks_allradios.RDS")
 
 
 
+# adding new dates
+dates_apr <- paste0(1:30, "-04-2018")
+input_df <- merge(dates_apr, radio_selection)
+names(input_df) <- c("date", "radio")
+all_radios_2 <- map2_df(input_df$radio, input_df$date, read_playlist_and_sleep)
+
+
+all_radios_combined <- bind_rows(all_radios, all_radios_2b)
+saveRDS(all_radios_combined, "playlist_project/data/allradios_30apr.RDS")
+
+write.csv2(all_radios_combined, "playlist_project/data/all_radios_apr_uncleaned2.csv")
 
 #quick check
 #do i have all the dates for all radios
-table(all_radios$radio, all_radios$date)
+table(all_radios_combined$radio, all_radios_combined$date)

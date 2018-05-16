@@ -73,6 +73,7 @@ write.csv(radios_clean2, "playlist_project/data/3m_radios_clean.csv")
 
 
 
+write.csv(radios_clean2, "playlist_project/data/all_radios_apr_cleaned.csv")
 
 
 #### check tot hier ####
