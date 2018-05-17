@@ -1,13 +1,23 @@
 library(tidyverse)
-# all_radios <- readRDS("playlist_project/data/10weeks_allradios.RDS")
+# all_radios <- readRDS("playlist_project/data/allradios_30apr.RDS")
+
+
+
+
 
 #------------------
 # CHECKING THE DATA
 #------------------
 
+# cleaning title - removing items between brackets () and [], removing multiple punctuation at end of sentence
+# cleaning artist - removing anything between brackets, removing punctuation
+# all: removing double spaces, to lower
+
 #basic cleaning
 radios_clean1 <- all_radios %>%
-  mutate(title = str_replace_all(title, "\\(.+\\)", "")) %>% 
+  mutate(title = str_replace_all(title, "\\(.+\\)", ""),
+         title = str_replace_all(title, "\\[.+\\]", ""),
+         title = str_replace(title, "(\\w+)\\s?[[:punct:]]+$", "\\1")) %>% 
   mutate(artist = str_replace_all(artist, "\\(.+\\)", ""),
          artist = str_replace_all(artist, "[.*,-]", " ")) %>% 
   mutate_all(tolower) %>% 
@@ -17,18 +27,11 @@ radios_clean1 <- all_radios %>%
   mutate(day = lubridate::ymd_hm(day)) 
 
 
-#### Cleaning up artist list ####
-
-#artist list and look at all names with and for isntance
-artist_list <- count(radios_clean1, artist, sort=TRUE)
-unlist(str_extract_all(artist_list$artist, ".+ and .+"))
-
-artist_list2 <- count(radios_clean2, artist, sort=TRUE)
-unlist(str_extract_all(artist_list2$artist, ".+ and .+"))
 
 
 
-#changing all feat. ft. + & etc into "and"
+
+#copy original artist
 radios_clean1$artist_original <- radios_clean1$artist
 
 
@@ -67,13 +70,14 @@ radios_clean2 <- radios_clean1 %>%
 
 
 
-saveRDS(radios_clean2, "playlist_project/data/3m_radios_clean.RDS")
-write.csv(radios_clean2, "playlist_project/data/3m_radios_clean.csv")
+saveRDS(radios_clean2, "playlist_project/data/radios_clean.RDS")
+write.csv(radios_clean2, "playlist_project/data/radios_clean.csv")
 
 
 
 
-write.csv(radios_clean2, "playlist_project/data/all_radios_apr_cleaned.csv")
+
+
 
 
 #### check tot hier ####
